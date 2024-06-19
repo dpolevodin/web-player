@@ -4,6 +4,7 @@ import { ThemeSwitcher } from "./shared/ui/ThemeSwitcher";
 import { useDarkMode } from "./shared/hooks/useDarkMode";
 import { ThemeContainer } from "./shared/ui/ThemeContainer";
 import "./App.module.css";
+import { PhoneContainer } from "./shared/ui/phoneContainer";
 
 function App() {
   const { darkMode, handleChangeDarkMode } = useDarkMode();
@@ -20,8 +21,10 @@ function App() {
       }}
     >
       <ThemeContainer isDarkMode={darkMode}>
-        <Button type="primary">Primary</Button>
-        <Button>Default</Button>
+        <PhoneContainer>
+          <Button type="primary">Primary</Button>
+          <Button>Default</Button>
+        </PhoneContainer>
       </ThemeContainer>
       <ThemeSwitcher onClick={handleChangeDarkMode} isDarkMode={darkMode} />
     </ConfigProvider>
