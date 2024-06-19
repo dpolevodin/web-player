@@ -6,7 +6,7 @@ type ReturnValue = {
 };
 
 export const useDarkMode = (): ReturnValue => {
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
 
   const handleChangeDarkMode = () => {
     setDarkMode((prev) => !prev);
