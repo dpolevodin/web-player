@@ -1,8 +1,9 @@
 import React from "react";
-import { Button, ConfigProvider, Space, theme } from "antd";
+import { Button, ConfigProvider, theme } from "antd";
 import { ThemeSwitcher } from "./shared/ui/ThemeSwitcher";
-import style from "./App.module.css";
 import { useDarkMode } from "./shared/hooks/useDarkMode";
+import { ThemeContainer } from "./shared/ui/ThemeContainer";
+import "./App.module.css";
 
 function App() {
   const { darkMode, handleChangeDarkMode } = useDarkMode();
@@ -18,10 +19,10 @@ function App() {
         algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
       }}
     >
-      <Space direction="vertical" align="center" className={style.container}>
+      <ThemeContainer isDarkMode={darkMode}>
         <Button type="primary">Primary</Button>
         <Button>Default</Button>
-      </Space>
+      </ThemeContainer>
       <ThemeSwitcher onClick={handleChangeDarkMode} isDarkMode={darkMode} />
     </ConfigProvider>
   );
