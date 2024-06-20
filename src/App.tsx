@@ -1,13 +1,28 @@
-import React from "react";
-import { Button, ConfigProvider, theme } from "antd";
+import React, { useState } from "react";
+import { ConfigProvider, theme } from "antd";
 import { ThemeSwitcher } from "./shared/ui/ThemeSwitcher";
 import { useDarkMode } from "./shared/hooks/useDarkMode";
 import { ThemeContainer } from "./shared/ui/ThemeContainer";
 import "./App.module.css";
-import { PhoneContainer } from "./shared/ui/phoneContainer";
+import { PhoneContainer } from "./shared/ui/PhoneContainer";
+import { ControlsButtonGroup } from "./shared/ui/ControlsButtonGroup";
 
 function App() {
   const { darkMode, handleChangeDarkMode } = useDarkMode();
+  const [playing, setPlaying] = useState(false);
+
+  const handlePlayClick = () => {
+    console.log("play clicked");
+    setPlaying((prev) => !prev);
+  };
+
+  const handleForwardClick = () => {
+    console.log("forward clicked");
+  };
+
+  const handleBackwardClick = () => {
+    console.log("backward clicked");
+  };
 
   return (
     <ConfigProvider
@@ -22,10 +37,12 @@ function App() {
     >
       <ThemeContainer isDarkMode={darkMode}>
         <PhoneContainer isDarkMode={darkMode}>
-          <Button type="primary" style={{ marginBottom: 8 }}>
-            Primary
-          </Button>
-          <Button>Default</Button>
+          <ControlsButtonGroup
+            playing={playing}
+            onPlayClick={handlePlayClick}
+            onBackwardClick={handleForwardClick}
+            onForwardClick={handleBackwardClick}
+          />
         </PhoneContainer>
       </ThemeContainer>
       <ThemeSwitcher onClick={handleChangeDarkMode} isDarkMode={darkMode} />
