@@ -14,15 +14,17 @@ function App() {
       theme={{
         token: {
           // TODO: собрать тему для приложения g
-          // colorPrimary: "#b9009d",
+          // colorPrimary: "#aeaeae",
           borderRadius: 12,
         },
         algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
       }}
     >
       <ThemeContainer isDarkMode={darkMode}>
-        <PhoneContainer>
-          <Button type="primary">Primary</Button>
+        <PhoneContainer isDarkMode={darkMode}>
+          <Button type="primary" style={{ marginBottom: 8 }}>
+            Primary
+          </Button>
           <Button>Default</Button>
         </PhoneContainer>
       </ThemeContainer>
