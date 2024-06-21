@@ -21,27 +21,33 @@ export const ControlsButtonGroup: FC<Props> = ({
   onBackwardClick,
   playing,
 }) => (
-  <Flex gap="large">
+  <Flex gap={30} align="center">
     <Button
       type="primary"
       shape="circle"
-      icon={<BackwardOutlined />}
-      size="large"
+      icon={<BackwardOutlined style={{ fontSize: 20, marginLeft: "-2px" }} />}
       onClick={onBackwardClick}
+      style={{ width: 48, height: 48 }}
     />
     <Button
       type="primary"
       shape="circle"
-      icon={playing ? <PauseOutlined /> : <CaretRightOutlined />}
-      size="large"
+      icon={
+        playing ? (
+          <PauseOutlined style={{ fontSize: 24 }} />
+        ) : (
+          <CaretRightOutlined style={{ fontSize: 28, marginRight: "-4px" }} />
+        )
+      }
       onClick={onPlayClick}
+      style={{ width: 60, height: 60 }}
     />
     <Button
       type="primary"
       shape="circle"
-      icon={<ForwardOutlined />}
-      size="large"
+      icon={<ForwardOutlined style={{ fontSize: 20, marginRight: "-2px" }} />}
       onClick={onForwardClick}
+      style={{ width: 48, height: 48 }}
     />
   </Flex>
 );
