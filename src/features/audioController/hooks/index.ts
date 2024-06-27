@@ -1,4 +1,5 @@
 import defaultTrack from "../assets/audio/default_track.mp3";
+import { AUDIO_ID } from "../config/constants";
 
 type Options = {
   trackUrl?: string;
@@ -7,28 +8,24 @@ type Options = {
 type Response = {
   play: () => void;
   pause: () => void;
-  load: () => void;
-  paused: boolean;
 };
 
-export const useAudio = (options?: Options): Response => {
-  const audioElement = new Audio(options?.trackUrl ?? defaultTrack);
+export const useAudio = (): Response => {
+  // TODO: не срабатывает при первом рендере
+  const audioElement = document.getElementById(AUDIO_ID) as HTMLAudioElement;
+
+  console.log(audioElement, "audioElement");
 
   const play = () => {
-    audioElement.play();
+    audioElement?.play();
   };
 
   const pause = () => {
-    audioElement.pause();
-  };
-  const load = () => {
-    audioElement.load();
+    audioElement?.pause();
   };
 
   return {
     play,
     pause,
-    load,
-    paused: audioElement.paused,
   };
 };

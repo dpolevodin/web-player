@@ -8,7 +8,7 @@ import { ControlsButtonGroup } from "./shared/ui/ControlsButtonGroup";
 import { ProgressSlider } from "./shared/ui/ProgressSlider";
 import { ImageWithDescription } from "./shared/ui/ImageWithDescription";
 import "./App.module.css";
-import { useAudio } from "./features/audioController";
+import { useAudio, AudioController } from "./features/audioController";
 
 // TODO: нужна привязка к относительным значениям
 const MAIN_CONTENT_WIDTH = "212px";
@@ -19,11 +19,7 @@ function App() {
   const [playingTime, setPlayingTime] = useState(0);
   const [playingMaxTime, setMaxPlayingTime] = useState(60);
 
-  const { play, pause, paused, load } = useAudio();
-
-  // TODO: delete this
-  console.log(">> render App");
-  console.log(">> paused", paused);
+  const { play, pause } = useAudio();
 
   const trackInfo = {
     title: "С Днем рождения!",
@@ -59,7 +55,6 @@ function App() {
 
   const handleForwardClick = () => {
     console.log("forward clicked");
-    load();
   };
 
   const handleBackwardClick = () => {
@@ -78,7 +73,7 @@ function App() {
       }}
     >
       <ThemeContainer isDarkMode={darkMode}>
-        {/* <AudioController /> */}
+        <AudioController />
         <PhoneContainer isDarkMode={darkMode}>
           <Space direction="vertical" size="small" align="center">
             <ImageWithDescription
