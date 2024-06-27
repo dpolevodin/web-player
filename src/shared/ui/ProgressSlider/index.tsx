@@ -1,5 +1,5 @@
+import { FC, Fragment } from "react";
 import { Slider, SliderSingleProps } from "antd";
-import { FC } from "react";
 
 const SECONDS_IN_HOUR = 3600;
 
@@ -34,15 +34,17 @@ export const ProgressSlider: FC<Props> = ({
   };
 
   return (
-    <Slider
-      max={max}
-      min={min}
-      value={value}
-      tooltip={{ formatter: null }}
-      keyboard
-      style={{ width }}
-      marks={marks}
-      {...props}
-    />
+    <Fragment>
+      <Slider
+        max={max}
+        min={min}
+        value={value}
+        tooltip={{ formatter: null }}
+        keyboard
+        style={{ width }}
+        marks={marks}
+        {...props}
+      />
+    </Fragment>
   );
 };

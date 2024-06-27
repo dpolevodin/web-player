@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { ConfigProvider, Space, theme, Image, Slider } from "antd";
+import { ConfigProvider, Space, theme } from "antd";
 import { ThemeSwitcher } from "./shared/ui/ThemeSwitcher";
 import { useDarkMode } from "./shared/hooks/useDarkMode";
 import { ThemeContainer } from "./shared/ui/ThemeContainer";
-import "./App.module.css";
 import { PhoneContainer } from "./shared/ui/PhoneContainer";
 import { ControlsButtonGroup } from "./shared/ui/ControlsButtonGroup";
 import { ProgressSlider } from "./shared/ui/ProgressSlider";
 import { ImageWithDescription } from "./shared/ui/ImageWithDescription";
+import "./App.module.css";
+import { useAudio } from "./features/audioController";
 
 // TODO: нужна привязка к относительным значениям
 const MAIN_CONTENT_WIDTH = "212px";
@@ -18,6 +19,12 @@ function App() {
   const [playingTime, setPlayingTime] = useState(0);
   const [playingMaxTime, setMaxPlayingTime] = useState(60);
 
+  const { play, pause, paused, load } = useAudio();
+
+  // TODO: delete this
+  console.log(">> render App");
+  console.log(">> paused", paused);
+
   const trackInfo = {
     title: "С Днем рождения!",
     group: "Барбарики",
@@ -27,25 +34,32 @@ function App() {
   console.log(playingTime, "playingTime");
 
   // TODO: заменить на музыкальный прогресс
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPlayingTime((prev) => (prev += 1));
-    }, 1000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setPlayingTime((prev) => (prev += 1));
+  //   }, 1000);
 
-    if (playingTime >= playingMaxTime) {
-      clearInterval(interval);
-    }
+  //   if (playingTime >= playingMaxTime) {
+  //     clearInterval(interval);
+  //   }
 
-    return () => clearInterval(interval);
-  }, [playingTime, playingMaxTime]);
+  //   return () => clearInterval(interval);
+  // }, [playingTime, playingMaxTime]);
 
   const handlePlayClick = () => {
-    console.log("play clicked");
-    setPlaying((prev) => !prev);
+    if (!playing) {
+      setPlaying(true);
+      play();
+    }
+    if (playing) {
+      setPlaying(false);
+      pause();
+    }
   };
 
   const handleForwardClick = () => {
     console.log("forward clicked");
+    load();
   };
 
   const handleBackwardClick = () => {
@@ -64,6 +78,7 @@ function App() {
       }}
     >
       <ThemeContainer isDarkMode={darkMode}>
+        {/* <AudioController /> */}
         <PhoneContainer isDarkMode={darkMode}>
           <Space direction="vertical" size="small" align="center">
             <ImageWithDescription
@@ -87,8 +102,8 @@ function App() {
             <ControlsButtonGroup
               playing={playing}
               onPlayClick={handlePlayClick}
-              onBackwardClick={handleForwardClick}
-              onForwardClick={handleBackwardClick}
+              onBackwardClick={handleBackwardClick}
+              onForwardClick={handleForwardClick}
             />
           </Space>
         </PhoneContainer>
