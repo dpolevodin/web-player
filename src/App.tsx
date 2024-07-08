@@ -19,7 +19,7 @@ function App() {
   const [playingTime, setPlayingTime] = useState(0);
   const [playingMaxTime, setMaxPlayingTime] = useState(60);
 
-  const { play, pause } = useAudio();
+  const { isPlaying, audioRef, togglePlay, duration, currentTime } = useAudio();
 
   const trackInfo = {
     title: "С Днем рождения!",
@@ -42,17 +42,6 @@ function App() {
   //   return () => clearInterval(interval);
   // }, [playingTime, playingMaxTime]);
 
-  const handlePlayClick = () => {
-    if (!playing) {
-      setPlaying(true);
-      play();
-    }
-    if (playing) {
-      setPlaying(false);
-      pause();
-    }
-  };
-
   const handleForwardClick = () => {
     console.log("forward clicked");
   };
@@ -73,7 +62,7 @@ function App() {
       }}
     >
       <ThemeContainer isDarkMode={darkMode}>
-        <AudioController />
+        <AudioController ref={audioRef} />
         <PhoneContainer isDarkMode={darkMode}>
           <Space direction="vertical" size="small" align="center">
             <ImageWithDescription
@@ -82,9 +71,9 @@ function App() {
               trackInfo={trackInfo}
             />
             <ProgressSlider
-              max={playingMaxTime}
+              max={duration}
               min={0}
-              value={playingTime}
+              value={currentTime}
               onChange={(value) => {
                 setPlayingTime(value);
               }}
@@ -95,8 +84,8 @@ function App() {
               }}
             />
             <ControlsButtonGroup
-              playing={playing}
-              onPlayClick={handlePlayClick}
+              playing={isPlaying}
+              onPlayClick={togglePlay}
               onBackwardClick={handleBackwardClick}
               onForwardClick={handleForwardClick}
             />
