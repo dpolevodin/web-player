@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ConfigProvider, Space, theme } from "antd";
 import { ThemeSwitcher } from "./shared/ui/ThemeSwitcher";
 import { useDarkMode } from "./shared/hooks/useDarkMode";
@@ -15,32 +15,22 @@ const MAIN_CONTENT_WIDTH = "212px";
 
 function App() {
   const { darkMode, handleChangeDarkMode } = useDarkMode();
-  const [playing, setPlaying] = useState(false);
-  const [playingTime, setPlayingTime] = useState(0);
-  const [playingMaxTime, setMaxPlayingTime] = useState(60);
 
-  const { isPlaying, audioRef, togglePlay, duration, currentTime } = useAudio();
+  const {
+    isPlaying,
+    audioRef,
+    togglePlay,
+    duration,
+    currentTime,
+    setCurrentTimeHandler,
+    onLoadedMetadata,
+    setTargetTime,
+  } = useAudio();
 
   const trackInfo = {
     title: "С Днем рождения!",
     group: "Барбарики",
   };
-
-  // TODO: delete this debugging
-  console.log(playingTime, "playingTime");
-
-  // TODO: заменить на музыкальный прогресс
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setPlayingTime((prev) => (prev += 1));
-  //   }, 1000);
-
-  //   if (playingTime >= playingMaxTime) {
-  //     clearInterval(interval);
-  //   }
-
-  //   return () => clearInterval(interval);
-  // }, [playingTime, playingMaxTime]);
 
   const handleForwardClick = () => {
     console.log("forward clicked");
@@ -62,7 +52,14 @@ function App() {
       }}
     >
       <ThemeContainer isDarkMode={darkMode}>
-        <AudioController ref={audioRef} />
+        <AudioController
+          ref={audioRef}
+          onLoadedMetadata={onLoadedMetadata}
+          onTimeUpdate={setCurrentTimeHandler}
+          onEnded={() => {
+            console.log("Track ended");
+          }}
+        />
         <PhoneContainer isDarkMode={darkMode}>
           <Space direction="vertical" size="small" align="center">
             <ImageWithDescription
@@ -74,13 +71,11 @@ function App() {
               max={duration}
               min={0}
               value={currentTime}
-              onChange={(value) => {
-                setPlayingTime(value);
-              }}
+              onChange={setTargetTime}
               defaultValue={0}
               width={MAIN_CONTENT_WIDTH}
-              onChangeComplete={() => {
-                console.log("onChangeCompleted");
+              onChangeComplete={(value) => {
+                console.log("onChangeCompleted", value);
               }}
             />
             <ControlsButtonGroup

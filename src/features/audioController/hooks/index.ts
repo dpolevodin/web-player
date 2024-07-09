@@ -5,22 +5,20 @@ import {
   Dispatch,
   SetStateAction,
   useEffect,
+  type ChangeEvent,
 } from "react";
-// TODO: remove it?
-// import defaultTrack from "../assets/audio/default_track.mp3";
-// import { AUDIO_ID } from "../config/constants";
-
-type Options = {
-  trackUrl?: string;
-};
 
 type Response = {
   isPlaying: boolean;
+  currentTime: number;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
   audioRef: MutableRefObject<HTMLAudioElement | null>;
   togglePlay: VoidFunction;
   duration: number;
-  currentTime: number;
+  onLoadedMetadata: VoidFunction;
+  targetTime: number;
+  setTargetTime: Dispatch<SetStateAction<number>>;
+  setCurrentTimeHandler: (e: ChangeEvent<HTMLAudioElement>) => void;
 };
 
 export const useAudio = (): Response => {
@@ -28,8 +26,7 @@ export const useAudio = (): Response => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-
-  console.log(currentTime, "currentTime");
+  const [targetTime, setTargetTime] = useState(0);
 
   const togglePlay = () => {
     if (isPlaying) {
@@ -41,34 +38,33 @@ export const useAudio = (): Response => {
     }
   };
 
+  /** Изменение текущего времени проигрыша дорожки пользователем */
   useEffect(() => {
-    if (audioRef?.current?.duration) {
+    if (audioRef?.current?.currentTime) {
+      audioRef.current.currentTime = targetTime;
+    }
+  }, [targetTime]);
+
+  const onLoadedMetadata = () => {
+    if (audioRef.current) {
       setDuration(audioRef?.current?.duration);
     }
-  }, [audioRef?.current]);
+  };
 
-  // useEffect(() => {
-  //   if (audioRef?.current?.currentTime) {
-  //     setCurrentTime(audioRef?.current?.currentTime);
-  //   }
-  // }, [audioRef?.current?.currentTime]);
+  const setCurrentTimeHandler = (e: ChangeEvent<HTMLAudioElement>) => {
+    setCurrentTime(e.currentTarget.currentTime);
+  };
 
-  useEffect(() => {
-    let interval: NodeJS.Timer;
-    if (!!audioRef?.current && audioRef?.current?.currentTime) {
-      interval = setInterval(() => {
-        setCurrentTime(audioRef.current.currentTime);
-      }, 1000);
-    }
-
-    return () => clearInterval(interval);
-  }, [audioRef?.current?.currentTime]);
   return {
     isPlaying,
     setIsPlaying,
     audioRef,
     togglePlay,
     duration,
+    setCurrentTimeHandler,
+    onLoadedMetadata,
+    targetTime,
+    setTargetTime,
     currentTime,
   };
 };
