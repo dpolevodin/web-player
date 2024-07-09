@@ -4,8 +4,8 @@ import { Button, Flex } from "antd";
 import {
   CaretRightOutlined,
   PauseOutlined,
-  BackwardOutlined,
-  ForwardOutlined,
+  StepBackwardOutlined,
+  StepForwardOutlined,
 } from "@ant-design/icons";
 
 type Props = {
@@ -25,7 +25,9 @@ export const ControlsButtonGroup: FC<Props> = ({
     <Button
       type="primary"
       shape="circle"
-      icon={<BackwardOutlined style={{ fontSize: 20, marginLeft: "-2px" }} />}
+      icon={
+        <StepBackwardOutlined style={{ fontSize: 20, marginLeft: "-2px" }} />
+      }
       onClick={onBackwardClick}
       style={{ width: 48, height: 48 }}
     />
@@ -45,7 +47,9 @@ export const ControlsButtonGroup: FC<Props> = ({
     <Button
       type="primary"
       shape="circle"
-      icon={<ForwardOutlined style={{ fontSize: 20, marginRight: "-2px" }} />}
+      icon={
+        <StepForwardOutlined style={{ fontSize: 20, marginRight: "-2px" }} />
+      }
       onClick={onForwardClick}
       style={{ width: 48, height: 48 }}
     />

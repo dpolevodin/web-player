@@ -9,6 +9,7 @@ import { ProgressSlider } from "./shared/ui/ProgressSlider";
 import { ImageWithDescription } from "./shared/ui/ImageWithDescription";
 import "./App.module.css";
 import { useAudio, AudioController } from "./features/audioController";
+import { UploadButton } from "./shared/ui/UploadButton";
 
 // TODO: нужна привязка к относительным значениям
 const MAIN_CONTENT_WIDTH = "212px";
@@ -84,6 +85,7 @@ function App() {
               onBackwardClick={handleBackwardClick}
               onForwardClick={handleForwardClick}
             />
+            <UploadButton />
           </Space>
         </PhoneContainer>
       </ThemeContainer>
