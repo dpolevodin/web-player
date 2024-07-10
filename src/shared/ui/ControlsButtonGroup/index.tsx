@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 
 type Props = {
+  disabled?: boolean;
   playing?: boolean;
   onPlayClick?: VoidFunction;
   onForwardClick?: VoidFunction;
@@ -20,6 +21,7 @@ export const ControlsButtonGroup: FC<Props> = ({
   onForwardClick,
   onBackwardClick,
   playing,
+  disabled,
 }) => (
   <Flex gap={30} align="center">
     <Button
@@ -30,6 +32,7 @@ export const ControlsButtonGroup: FC<Props> = ({
       }
       onClick={onBackwardClick}
       style={{ width: 48, height: 48 }}
+      disabled={disabled}
     />
     <Button
       type="primary"
@@ -43,6 +46,7 @@ export const ControlsButtonGroup: FC<Props> = ({
       }
       onClick={onPlayClick}
       style={{ width: 60, height: 60 }}
+      disabled={disabled}
     />
     <Button
       type="primary"
@@ -52,6 +56,7 @@ export const ControlsButtonGroup: FC<Props> = ({
       }
       onClick={onForwardClick}
       style={{ width: 48, height: 48 }}
+      disabled={disabled}
     />
   </Flex>
 );

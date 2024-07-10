@@ -21,12 +21,19 @@ type Response = {
   setCurrentTimeHandler: (e: ChangeEvent<HTMLAudioElement>) => void;
 };
 
-export const useAudio = (): Response => {
+export const useAudio = (src: any): Response => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [targetTime, setTargetTime] = useState(0);
+
+  useEffect(() => {
+    if (audioRef.current && src) {
+      audioRef.current.src = src;
+      console.log(audioRef.current.src, "audioRef.current.src");
+    }
+  }, [src]);
 
   const togglePlay = () => {
     if (isPlaying) {

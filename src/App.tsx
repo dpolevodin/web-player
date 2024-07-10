@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import { ConfigProvider, Space, theme } from "antd";
 import { ThemeSwitcher } from "./shared/ui/ThemeSwitcher";
 import { useDarkMode } from "./shared/hooks/useDarkMode";
@@ -10,12 +10,14 @@ import { ImageWithDescription } from "./shared/ui/ImageWithDescription";
 import "./App.module.css";
 import { useAudio, AudioController } from "./features/audioController";
 import { HeaderBlock } from "./shared/ui/HeaderBlock";
+import type { UploadFile } from "antd";
 
 // TODO: нужна привязка к относительным значениям
 const MAIN_CONTENT_WIDTH = "212px";
 
 function App() {
   const { darkMode, handleChangeDarkMode } = useDarkMode();
+  const [audioFileSrc, setAudioFileSrc] = useState<string | null>(null);
 
   const {
     isPlaying,
@@ -26,7 +28,7 @@ function App() {
     setCurrentTimeHandler,
     onLoadedMetadata,
     setTargetTime,
-  } = useAudio();
+  } = useAudio(audioFileSrc);
 
   const trackInfo = {
     title: "С Днем рождения!",
@@ -39,6 +41,12 @@ function App() {
 
   const handleBackwardClick = () => {
     console.log("backward clicked");
+  };
+
+  const handleUpload = (file: UploadFile) => {
+    if (file) {
+      setAudioFileSrc(URL.createObjectURL(file as unknown as File));
+    }
   };
 
   return (
@@ -54,6 +62,7 @@ function App() {
     >
       <ThemeContainer isDarkMode={darkMode}>
         <AudioController
+          // src={getFileSrc(audioFile)}
           ref={audioRef}
           onLoadedMetadata={onLoadedMetadata}
           onTimeUpdate={setCurrentTimeHandler}
@@ -63,13 +72,14 @@ function App() {
         />
         <PhoneContainer isDarkMode={darkMode}>
           <Space direction="vertical" size="small" align="center">
-            <HeaderBlock />
+            <HeaderBlock onUpload={handleUpload} />
             <ImageWithDescription
               width={MAIN_CONTENT_WIDTH}
               src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
               trackInfo={trackInfo}
             />
             <ProgressSlider
+              disabled={!audioFileSrc}
               max={duration}
               min={0}
               value={currentTime}
@@ -85,6 +95,7 @@ function App() {
               onPlayClick={togglePlay}
               onBackwardClick={handleBackwardClick}
               onForwardClick={handleForwardClick}
+              disabled={!audioFileSrc}
             />
           </Space>
         </PhoneContainer>

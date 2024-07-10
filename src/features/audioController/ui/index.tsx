@@ -7,23 +7,27 @@ type Props = {
   onLoadedMetadata?: VoidFunction;
   onTimeUpdate?: (event: ChangeEvent<HTMLAudioElement>) => void;
   onEnded?: VoidFunction;
+  src?: string;
 };
 
 export const AudioController = forwardRef<HTMLAudioElement, Props>(
   function AudioController(
-    { onDurationChange, onLoadedMetadata, onTimeUpdate, onEnded },
+    { onDurationChange, onLoadedMetadata, onTimeUpdate, onEnded, src },
     ref
   ) {
+    console.log(src, "src");
     return (
       <audio
-        src={defaultTrack}
+        src={src}
         id={AUDIO_ID}
         ref={ref}
         onDurationChange={onDurationChange}
         onLoadedMetadata={onLoadedMetadata}
         onTimeUpdate={onTimeUpdate}
         onEnded={onEnded}
-      />
+      >
+        <source src={src} />
+      </audio>
     );
   }
 );

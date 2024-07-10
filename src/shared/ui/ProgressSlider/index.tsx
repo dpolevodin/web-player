@@ -22,6 +22,7 @@ export const ProgressSlider: FC<Props> = ({
   value,
   max,
   min,
+  disabled,
   ...props
 }) => {
   const currentValue = formatToSeconds(value);
@@ -42,7 +43,8 @@ export const ProgressSlider: FC<Props> = ({
         tooltip={{ formatter: null }}
         keyboard
         style={{ width }}
-        marks={marks}
+        marks={disabled ? undefined : marks}
+        disabled={disabled}
         {...props}
       />
     </Fragment>
