@@ -31,7 +31,6 @@ export const useAudio = (src: any): Response => {
   useEffect(() => {
     if (audioRef.current && src) {
       audioRef.current.src = src;
-      console.log(audioRef.current.src, "audioRef.current.src");
     }
   }, [src]);
 
