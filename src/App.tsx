@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { ConfigProvider, Space, theme } from "antd";
 import { ThemeSwitcher } from "./shared/ui/ThemeSwitcher";
 import { useDarkMode } from "./shared/hooks/useDarkMode";
@@ -11,13 +11,46 @@ import "./App.module.css";
 import { useAudio, AudioController } from "./features/audioController";
 import { HeaderBlock } from "./shared/ui/HeaderBlock";
 import type { UploadFile } from "antd";
+import type { SpaceImagesResponse } from "./shared/types/imageTypes";
 
+const REQUEST_IMAGE_COUNT = 10;
+const DEFAULT_IMAGE_URL = {
+  title: "A Year of Assessing Astronomical Hazards",
+  url: "https://apod.nasa.gov/apod/image/2011/IMG_20201124052235_9280_px1050.jpg",
+};
 // TODO: нужна привязка к относительным значениям
 const MAIN_CONTENT_WIDTH = "212px";
 
 function App() {
   const { darkMode, handleChangeDarkMode } = useDarkMode();
   const [audioFileSrc, setAudioFileSrc] = useState<string | null>(null);
+  const [currentImage, setCurrentImage] = useState<{
+    url: string;
+    title: string;
+  } | null>(null);
+
+  useEffect(() => {
+    console.log("i fire once");
+    fetch(
+      // `https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=${REQUEST_IMAGE_COUNT}`
+      `https://test/planetary/apod?api_key=DEMO_KEY&count=${REQUEST_IMAGE_COUNT}`
+    )
+      .then((response) => response.json())
+      .then((data: SpaceImagesResponse) => {
+        const mappedData = data?.map((item) => ({
+          url: item.url,
+          title: item.title,
+        }));
+        const randomImageItem =
+          mappedData[Math.floor(Math.random() * mappedData.length)];
+        if (randomImageItem) {
+          setCurrentImage(randomImageItem);
+        }
+      })
+      .catch(() => {
+        setCurrentImage(DEFAULT_IMAGE_URL);
+      });
+  }, []);
 
   const {
     isPlaying,
@@ -62,7 +95,6 @@ function App() {
     >
       <ThemeContainer isDarkMode={darkMode}>
         <AudioController
-          // src={getFileSrc(audioFile)}
           ref={audioRef}
           onLoadedMetadata={onLoadedMetadata}
           onTimeUpdate={setCurrentTimeHandler}
@@ -75,8 +107,8 @@ function App() {
             <HeaderBlock onUpload={handleUpload} />
             <ImageWithDescription
               width={MAIN_CONTENT_WIDTH}
-              src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-              trackInfo={trackInfo}
+              src={currentImage?.url ?? undefined}
+              trackInfo={{ title: currentImage?.title, group: "Nasa group" }}
             />
             <ProgressSlider
               disabled={!audioFileSrc}

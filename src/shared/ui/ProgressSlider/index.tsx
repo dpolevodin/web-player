@@ -30,8 +30,10 @@ export const ProgressSlider: FC<Props> = ({
 
   // TODO: убрать контрольные точки визуальные
   const marks: SliderSingleProps["marks"] = {
-    [`${min}`]: `${value && value > 0 ? currentValue : "00:00"}`,
-    [`${max}`]: `${maxValue}`,
+    [`${min}`]: `${
+      value && value > 0 && currentValue ? currentValue : "00:00"
+    }`,
+    [`${max}`]: maxValue ? `${maxValue}` : "00:00",
   };
 
   return (
@@ -43,7 +45,7 @@ export const ProgressSlider: FC<Props> = ({
         tooltip={{ formatter: null }}
         keyboard
         style={{ width }}
-        marks={disabled ? undefined : marks}
+        marks={marks}
         disabled={disabled}
         {...props}
       />
