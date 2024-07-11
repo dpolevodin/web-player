@@ -30,7 +30,6 @@ function App() {
   } | null>(null);
 
   useEffect(() => {
-    console.log("i fire once");
     fetch(
       // `https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=${REQUEST_IMAGE_COUNT}`
       `https://test/planetary/apod?api_key=DEMO_KEY&count=${REQUEST_IMAGE_COUNT}`
