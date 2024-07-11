@@ -30,6 +30,7 @@ function App() {
   const { darkMode, handleChangeDarkMode } = useDarkMode();
   const [audioFileSrc, setAudioFileSrc] = useState<string | null>(null);
   const [data, setData] = useState<SpaceImagesResponse>([DEFAULT_IMAGE_URL]);
+  const [favorite, addToFavorite] = useState(false);
 
   useEffect(() => {
     fetch(
@@ -101,7 +102,13 @@ function App() {
         />
         <PhoneContainer isDarkMode={darkMode}>
           <Space direction="vertical" size="small" align="center">
-            <HeaderBlock onUpload={handleUpload} />
+            <HeaderBlock
+              onUpload={handleUpload}
+              addedToFavorite={favorite}
+              onAddToFavorite={() => {
+                addToFavorite((prev) => !prev);
+              }}
+            />
             <ImageWithDescription
               imagesData={data}
               width={MAIN_CONTENT_WIDTH}
