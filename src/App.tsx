@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ConfigProvider, Space, theme } from "antd";
 import { ThemeSwitcher } from "./shared/ui/ThemeSwitcher";
 import { useDarkMode } from "./shared/hooks/useDarkMode";
@@ -11,12 +11,17 @@ import "./App.module.css";
 import { useAudio, AudioController } from "./features/audioController";
 import { HeaderBlock } from "./shared/ui/HeaderBlock";
 import type { UploadFile } from "antd";
-import type { SpaceImagesResponse } from "./shared/types/imageTypes";
+import type {
+  SpaceImagesResponse,
+  SpaceImageItem,
+} from "./shared/types/imageTypes";
+import { MOCK_DATA } from "./shared/mocks";
 
 const REQUEST_IMAGE_COUNT = 10;
 const DEFAULT_IMAGE_URL = {
   title: "A Year of Assessing Astronomical Hazards",
   url: "https://apod.nasa.gov/apod/image/2011/IMG_20201124052235_9280_px1050.jpg",
+  copyright: "Nasa",
 };
 // TODO: нужна привязка к относительным значениям
 const MAIN_CONTENT_WIDTH = "212px";
@@ -24,30 +29,23 @@ const MAIN_CONTENT_WIDTH = "212px";
 function App() {
   const { darkMode, handleChangeDarkMode } = useDarkMode();
   const [audioFileSrc, setAudioFileSrc] = useState<string | null>(null);
-  const [currentImage, setCurrentImage] = useState<{
-    url: string;
-    title: string;
-  } | null>(null);
+  const [data, setData] = useState<SpaceImagesResponse>([DEFAULT_IMAGE_URL]);
 
   useEffect(() => {
     fetch(
+      // TODO: вернуть обратно на корректную ссылку
       // `https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=${REQUEST_IMAGE_COUNT}`
       `https://test/planetary/apod?api_key=DEMO_KEY&count=${REQUEST_IMAGE_COUNT}`
     )
       .then((response) => response.json())
       .then((data: SpaceImagesResponse) => {
-        const mappedData = data?.map((item) => ({
-          url: item.url,
-          title: item.title,
-        }));
-        const randomImageItem =
-          mappedData[Math.floor(Math.random() * mappedData.length)];
-        if (randomImageItem) {
-          setCurrentImage(randomImageItem);
+        const randomItem = data[Math.floor(Math.random() * data.length)];
+        if (randomItem) {
+          setData(data);
         }
       })
       .catch(() => {
-        setCurrentImage(DEFAULT_IMAGE_URL);
+        setData(MOCK_DATA);
       });
   }, []);
 
@@ -105,9 +103,8 @@ function App() {
           <Space direction="vertical" size="small" align="center">
             <HeaderBlock onUpload={handleUpload} />
             <ImageWithDescription
+              imagesData={data}
               width={MAIN_CONTENT_WIDTH}
-              src={currentImage?.url ?? undefined}
-              trackInfo={{ title: currentImage?.title, group: "Nasa group" }}
             />
             <ProgressSlider
               disabled={!audioFileSrc}
