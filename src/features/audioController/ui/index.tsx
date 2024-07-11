@@ -15,7 +15,6 @@ export const AudioController = forwardRef<HTMLAudioElement, Props>(
     { onDurationChange, onLoadedMetadata, onTimeUpdate, onEnded, src },
     ref
   ) {
-    console.log(src, "src");
     return (
       <audio
         src={src}
