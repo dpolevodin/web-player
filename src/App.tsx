@@ -71,6 +71,7 @@ function App() {
   };
 
   const handleUpload = (file: UploadFile) => {
+    setAudioFile(null);
     if (file) {
       setAudioFile({
         name: file?.name ?? "unknown",
@@ -112,7 +113,9 @@ function App() {
               imagesData={data}
               width={MAIN_CONTENT_WIDTH}
             />
-            {audioFile && <FileNameText>{audioFile.name}</FileNameText>}
+            {audioFile && (
+              <FileNameText playing={isPlaying}>{audioFile.name}</FileNameText>
+            )}
             <ProgressSlider
               disabled={!audioFile}
               max={duration}

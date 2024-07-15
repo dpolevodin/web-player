@@ -1,40 +1,29 @@
-import React, { PropsWithChildren, FC, useState } from "react";
-import { Typography } from "antd";
+import React, { PropsWithChildren, FC } from "react";
+import { Typography, Badge, Space } from "antd";
 import { MAX_CONTENT_WIDTH } from "../../../constants";
-import styles from "./styles.module.css";
-import classNames from "classnames";
 
 const { Text } = Typography;
 
-export const FileNameText: FC<PropsWithChildren> = ({ children }) => {
-  const [ticker, setTicker] = useState(false);
+type Props = {
+  playing: boolean;
+};
+
+export const FileNameText: FC<PropsWithChildren<Props>> = ({
+  playing,
+  children,
+}) => {
   return (
-    <div
-      style={{ maxWidth: MAX_CONTENT_WIDTH }}
-      className={styles.tickerWrapper}
-    >
+    <Space size="small" style={{ marginTop: 16 }}>
+      <Badge status={playing ? "processing" : "success"} />
       <Text
-        className={classNames({
-          [styles.ticker]: ticker,
-        })}
-        style={{ maxWidth: MAX_CONTENT_WIDTH, opacity: 0 }}
+        style={{ maxWidth: MAX_CONTENT_WIDTH }}
+        strong
         ellipsis={{
-          onEllipsis: (ellipsis) => {
-            console.log(ellipsis, "ellipsis");
-            setTicker(ellipsis);
-          },
+          tooltip: true,
         }}
       >
         {children}
       </Text>
-      <Text
-        style={{ maxWidth: MAX_CONTENT_WIDTH }}
-        className={classNames({
-          [styles.tickerVisible]: ticker,
-        })}
-      >
-        {children}
-      </Text>
-    </div>
+    </Space>
   );
 };

@@ -13,7 +13,12 @@ export const PhoneContainer: FC<PropsWithChildren<Props>> = ({
 }) => {
   return (
     <div className={styles.phoneWrapper}>
-      <img width={"100%"} src={image} alt="phone-template" />
+      <img
+        width={"100%"}
+        src={image}
+        alt="phone-template"
+        className={styles.phoneImage}
+      />
       <div className={styles.phoneSpeaker} />
       <div
         className={classNames(styles.phoneContentContainer, {

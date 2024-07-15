@@ -3,6 +3,19 @@
   width: 800px;
 }
 
+.phoneWrapper::before {
+  position: absolute;
+  content: "";
+  background: "red";
+  content: "";
+  width: 41%;
+  border-radius: 46px;
+  transform: translate(235px, 60px);
+  height: 85%;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 24px 48px,
+    rgba(0, 0, 0, 0.4) 0px 24px 32px;
+}
+
 .phoneContentContainer {
   position: absolute;
   display: flex;

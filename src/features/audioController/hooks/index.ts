@@ -29,6 +29,10 @@ export const useAudio = (src: any): Response => {
   const [targetTime, setTargetTime] = useState(0);
 
   useEffect(() => {
+    setIsPlaying(false);
+    setDuration(0);
+    setCurrentTime(0);
+    setTargetTime(0);
     if (audioRef.current && src) {
       audioRef.current.src = src;
     }
