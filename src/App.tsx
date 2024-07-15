@@ -13,7 +13,6 @@ import { HeaderBlock } from "./shared/ui/HeaderBlock";
 import type { UploadFile } from "antd";
 import type { SpaceImagesResponse } from "./shared/types/imageTypes";
 import { MOCK_DATA } from "./shared/mocks";
-import { MAX_CONTENT_WIDTH } from "./constants";
 import { FileNameText } from "./shared/ui/FileNameText";
 
 const REQUEST_IMAGE_COUNT = 10;
