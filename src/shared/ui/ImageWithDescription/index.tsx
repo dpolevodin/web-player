@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Image, Space, Typography, type ImageProps } from "antd";
 import { SpaceImagesResponse, SpaceImageItem } from "../../types/imageTypes";
+import { MAX_CONTENT_WIDTH } from "../../../constants";
 
 const { Text } = Typography;
 
@@ -47,7 +48,11 @@ export const ImageWithDescription: FC<Props> = ({
         />
       </Image.PreviewGroup>
 
-      <Space direction="vertical" size={0} style={{ maxWidth: 208 }}>
+      <Space
+        direction="vertical"
+        size={0}
+        style={{ maxWidth: MAX_CONTENT_WIDTH }}
+      >
         <Text ellipsis>{currentImage?.title}</Text>
         <Text type="secondary" ellipsis>
           {currentImage?.copyright}

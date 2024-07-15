@@ -17,6 +17,7 @@ export const UploadButton: FC<UploadButtonProps> = ({ onUpload, fileList }) => {
     }
     return false;
   };
+
   return (
     <Upload
       accept={ACCEPTED_FORMATS}

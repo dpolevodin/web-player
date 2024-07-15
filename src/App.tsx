@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ConfigProvider, Space, theme } from "antd";
+import { ConfigProvider, Space, theme, Typography } from "antd";
 import { ThemeSwitcher } from "./shared/ui/ThemeSwitcher";
 import { useDarkMode } from "./shared/hooks/useDarkMode";
 import { ThemeContainer } from "./shared/ui/ThemeContainer";
@@ -11,11 +11,10 @@ import "./App.module.css";
 import { useAudio, AudioController } from "./features/audioController";
 import { HeaderBlock } from "./shared/ui/HeaderBlock";
 import type { UploadFile } from "antd";
-import type {
-  SpaceImagesResponse,
-  SpaceImageItem,
-} from "./shared/types/imageTypes";
+import type { SpaceImagesResponse } from "./shared/types/imageTypes";
 import { MOCK_DATA } from "./shared/mocks";
+import { MAX_CONTENT_WIDTH } from "./constants";
+import { FileNameText } from "./shared/ui/FileNameText";
 
 const REQUEST_IMAGE_COUNT = 10;
 const DEFAULT_IMAGE_URL = {
@@ -26,9 +25,11 @@ const DEFAULT_IMAGE_URL = {
 // TODO: нужна привязка к относительным значениям
 const MAIN_CONTENT_WIDTH = "212px";
 
+type AudioFile = { src: string; name: string };
+
 function App() {
   const { darkMode, handleChangeDarkMode } = useDarkMode();
-  const [audioFileSrc, setAudioFileSrc] = useState<string | null>(null);
+  const [audioFile, setAudioFile] = useState<AudioFile | null>(null);
   const [data, setData] = useState<SpaceImagesResponse>([DEFAULT_IMAGE_URL]);
   const [favorite, addToFavorite] = useState(false);
 
@@ -59,12 +60,7 @@ function App() {
     setCurrentTimeHandler,
     onLoadedMetadata,
     setTargetTime,
-  } = useAudio(audioFileSrc);
-
-  const trackInfo = {
-    title: "С Днем рождения!",
-    group: "Барбарики",
-  };
+  } = useAudio(audioFile?.src);
 
   const handleForwardClick = () => {
     console.log("forward clicked");
@@ -76,7 +72,10 @@ function App() {
 
   const handleUpload = (file: UploadFile) => {
     if (file) {
-      setAudioFileSrc(URL.createObjectURL(file as unknown as File));
+      setAudioFile({
+        name: file?.name ?? "unknown",
+        src: URL.createObjectURL(file as unknown as File),
+      });
     }
   };
 
@@ -113,8 +112,9 @@ function App() {
               imagesData={data}
               width={MAIN_CONTENT_WIDTH}
             />
+            {audioFile && <FileNameText>{audioFile.name}</FileNameText>}
             <ProgressSlider
-              disabled={!audioFileSrc}
+              disabled={!audioFile}
               max={duration}
               min={0}
               value={currentTime}
@@ -130,7 +130,7 @@ function App() {
               onPlayClick={togglePlay}
               onBackwardClick={handleBackwardClick}
               onForwardClick={handleForwardClick}
-              disabled={!audioFileSrc}
+              disabled={!audioFile}
             />
           </Space>
         </PhoneContainer>
