@@ -4,12 +4,15 @@ body {
 
 .screenOut {
   transform: translate(150%);
+  opacity: 0;
 }
 
 .screenIn {
   transform: translate(0);
+  opacity: 1;
 }
 
-.smoothScroll {
-  transition: "all 1s linear";
+.smoothScrollPage {
+  position: absolute;
+  transition: all 0.15s linear;
 }
