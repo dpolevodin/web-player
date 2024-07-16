@@ -17,6 +17,6 @@ export const AddToFavoriteButton: FC<AddToFavoriteButtonProps> = ({
       shape="circle"
       size="large"
       onClick={onClick}
-    ></Button>
+    />
   </Tooltip>
 );

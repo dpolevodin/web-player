@@ -1,0 +1,13 @@
+.listButton {
+  position: absolute;
+  bottom: 100px;
+  right: 292px;
+}
+
+.buttonIcon {
+  font-size: 20px !important;
+}
+
+.listViewRightButton {
+  left: 292px;
+}
