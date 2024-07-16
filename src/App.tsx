@@ -16,6 +16,9 @@ import { MOCK_DATA } from "./shared/mocks";
 import { FileNameText } from "./shared/ui/FileNameText";
 import { UnorderedListOutlined } from "@ant-design/icons";
 import { TrackListButton } from "./shared/ui/TrackListButton";
+import classNames from "classnames";
+import styles from "./App.module.css";
+import { TrackList } from "./shared/ui/TrackList";
 
 const REQUEST_IMAGE_COUNT = 10;
 const DEFAULT_IMAGE_URL = {
@@ -24,7 +27,8 @@ const DEFAULT_IMAGE_URL = {
   copyright: "Nasa",
 };
 // TODO: нужна привязка к относительным значениям
-const MAIN_CONTENT_WIDTH = "212px";
+const MAIN_CONTENT_WIDTH = "208px";
+const MAIN_CONTENT_HEIGHT = "480px";
 
 type AudioFile = { src: string; name: string };
 
@@ -111,12 +115,10 @@ function App() {
             direction="vertical"
             size="small"
             align="center"
-            style={{
-              position: "absolute",
-              transform: trackListView ? "translate(150%)" : "translate(0)",
-              transition: "all 0.15s linear",
-              opacity: !trackListView ? 1 : 0,
-            }}
+            className={classNames(styles.smoothScrollPage, {
+              [styles.screenIn]: !trackListView,
+              [styles.screenOut]: trackListView,
+            })}
           >
             <HeaderBlock
               onUpload={handleUpload}
@@ -152,23 +154,20 @@ function App() {
               disabled={!audioFile}
             />
           </Space>
-
-          <Space
-            direction="vertical"
-            size="small"
-            align="start"
+          <TrackList
+            list={["track_1", "track_2", "track_3", "track_4", "track_5"]}
             style={{
-              position: "absolute",
-              height: 480,
-              width: MAIN_CONTENT_WIDTH,
-              transform: !trackListView ? "translate(150%)" : "translate(0)",
-              transition: "all 0.15s linear",
-              opacity: trackListView ? 1 : 0,
+              height: MAIN_CONTENT_HEIGHT,
+              width: 256,
+              maxHeight: MAIN_CONTENT_HEIGHT,
+              overflowY: "auto",
+              overflowX: "hidden",
             }}
-          >
-            Track list
-          </Space>
-
+            className={classNames(styles.smoothScrollPage, {
+              [styles.screenIn]: trackListView,
+              [styles.screenOut]: !trackListView,
+            })}
+          />
           <TrackListButton
             onClick={handleTrackListButtonClick}
             isTrackListView={trackListView}
