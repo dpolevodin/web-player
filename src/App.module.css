@@ -1,3 +1,15 @@
 body {
   margin: 0;
 }
+
+.screenOut {
+  transform: translate(150%);
+}
+
+.screenIn {
+  transform: translate(0);
+}
+
+.smoothScroll {
+  transition: "all 1s linear";
+}

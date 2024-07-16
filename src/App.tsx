@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ConfigProvider, Space, theme, Typography } from "antd";
+import { ConfigProvider, Carousel, Space, theme } from "antd";
 import { ThemeSwitcher } from "./shared/ui/ThemeSwitcher";
 import { useDarkMode } from "./shared/hooks/useDarkMode";
 import { ThemeContainer } from "./shared/ui/ThemeContainer";
@@ -14,6 +14,8 @@ import type { UploadFile } from "antd";
 import type { SpaceImagesResponse } from "./shared/types/imageTypes";
 import { MOCK_DATA } from "./shared/mocks";
 import { FileNameText } from "./shared/ui/FileNameText";
+import { UnorderedListOutlined } from "@ant-design/icons";
+import { TrackListButton } from "./shared/ui/TrackListButton";
 
 const REQUEST_IMAGE_COUNT = 10;
 const DEFAULT_IMAGE_URL = {
@@ -31,6 +33,7 @@ function App() {
   const [audioFile, setAudioFile] = useState<AudioFile | null>(null);
   const [data, setData] = useState<SpaceImagesResponse>([DEFAULT_IMAGE_URL]);
   const [favorite, addToFavorite] = useState(false);
+  const [trackListView, setTrackListView] = useState(false);
 
   useEffect(() => {
     fetch(
@@ -79,6 +82,10 @@ function App() {
     }
   };
 
+  const handleTrackListButtonClick = () => {
+    setTrackListView((prevState) => !prevState);
+  };
+
   return (
     <ConfigProvider
       theme={{
@@ -100,7 +107,17 @@ function App() {
           }}
         />
         <PhoneContainer isDarkMode={darkMode}>
-          <Space direction="vertical" size="small" align="center">
+          <Space
+            direction="vertical"
+            size="small"
+            align="center"
+            style={{
+              position: "absolute",
+              transform: trackListView ? "translate(150%)" : "translate(0)",
+              transition: "all 0.15s linear",
+              opacity: !trackListView ? 1 : 0,
+            }}
+          >
             <HeaderBlock
               onUpload={handleUpload}
               addedToFavorite={favorite}
@@ -135,6 +152,27 @@ function App() {
               disabled={!audioFile}
             />
           </Space>
+
+          <Space
+            direction="vertical"
+            size="small"
+            align="start"
+            style={{
+              position: "absolute",
+              height: 480,
+              width: MAIN_CONTENT_WIDTH,
+              transform: !trackListView ? "translate(150%)" : "translate(0)",
+              transition: "all 0.15s linear",
+              opacity: trackListView ? 1 : 0,
+            }}
+          >
+            Track list
+          </Space>
+
+          <TrackListButton
+            onClick={handleTrackListButtonClick}
+            isTrackListView={trackListView}
+          />
         </PhoneContainer>
       </ThemeContainer>
       <ThemeSwitcher onClick={handleChangeDarkMode} isDarkMode={darkMode} />
