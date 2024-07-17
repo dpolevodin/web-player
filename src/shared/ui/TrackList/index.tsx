@@ -1,5 +1,13 @@
-import { FC, Fragment } from "react";
-import { Empty, Space, SpaceProps, List, Badge } from "antd";
+import { FC } from "react";
+import {
+  Empty,
+  Space,
+  SpaceProps,
+  List,
+  Badge,
+  Button,
+  Typography,
+} from "antd";
 import { MAX_CONTENT_WIDTH } from "../../../constants";
 import { AudioFile } from "../../types/types";
 import { formatToSeconds } from "../ProgressSlider/utils";
@@ -7,51 +15,75 @@ import { formatToSeconds } from "../ProgressSlider/utils";
 type Props = SpaceProps & {
   list: AudioFile[];
   playingFileInfo?: AudioFile;
+  onItemClick?: (item: AudioFile) => void;
 };
 
-export const TrackList: FC<Props> = ({ list, playingFileInfo, ...props }) => {
+const { Text } = Typography;
+
+export const TrackList: FC<Props> = ({
+  list,
+  playingFileInfo,
+  onItemClick,
+  ...props
+}) => {
   const playingFileUid = playingFileInfo?.playing
     ? playingFileInfo.uid
     : undefined;
+
+  const handleItemClick = (item: AudioFile) => () => {
+    console.log(item.name, "click");
+    if (onItemClick) {
+      onItemClick(item);
+    }
+  };
+
   return (
     <Space direction="vertical" size="small" align="start" {...props}>
       {list.length ? (
         <List
           size="small"
           dataSource={list}
-          renderItem={(item) => (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 16,
-                width: "100%",
-              }}
-            >
+          renderItem={(item) => {
+            const { name, uid } = item;
+
+            return (
               <div
-                style={{ display: "flex", alignItems: "center", gap: 16 }}
-                key={item.name}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 16,
+                  width: "100%",
+                }}
               >
-                <Badge
-                  status={
-                    playingFileUid === item.uid ? "processing" : "success"
-                  }
-                />
                 <div
-                  style={{
-                    maxWidth: 180,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
+                  style={{ display: "flex", alignItems: "center", gap: 16 }}
+                  key={name}
                 >
-                  {item.name}
+                  <Badge
+                    status={playingFileUid === uid ? "processing" : "success"}
+                  />
+                  <Button
+                    onClick={handleItemClick(item)}
+                    type="link"
+                    style={{
+                      maxWidth: 180,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      justifyContent: "flex-start",
+                      padding: 0,
+                    }}
+                  >
+                    {name}
+                  </Button>
                 </div>
+                <Text type="secondary">
+                  {formatToSeconds(item?.duration) ?? "00:00"}
+                </Text>
               </div>
-              <div>{formatToSeconds(item?.duration) ?? "00:00"}</div>
-            </div>
-          )}
+            );
+          }}
           style={{ width: props?.style?.width ?? MAX_CONTENT_WIDTH }}
         />
       ) : (
