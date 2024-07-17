@@ -7,6 +7,7 @@ import {
   useEffect,
   type ChangeEvent,
 } from "react";
+import type { AudioFile } from "../../../shared/types/types";
 
 type Response = {
   isPlaying: boolean;
@@ -19,9 +20,10 @@ type Response = {
   targetTime: number;
   setTargetTime: Dispatch<SetStateAction<number>>;
   setCurrentTimeHandler: (e: ChangeEvent<HTMLAudioElement>) => void;
+  fileInfo?: AudioFile;
 };
 
-export const useAudio = (src: any): Response => {
+export const useAudio = (file: AudioFile | null): Response => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -33,10 +35,10 @@ export const useAudio = (src: any): Response => {
     setDuration(0);
     setCurrentTime(0);
     setTargetTime(0);
-    if (audioRef.current && src) {
-      audioRef.current.src = src;
+    if (audioRef.current && file?.src) {
+      audioRef.current.src = file.src;
     }
-  }, [src]);
+  }, [file]);
 
   const togglePlay = () => {
     if (isPlaying) {
@@ -76,5 +78,6 @@ export const useAudio = (src: any): Response => {
     targetTime,
     setTargetTime,
     currentTime,
+    fileInfo: file ? { ...file, playing: isPlaying } : undefined,
   };
 };

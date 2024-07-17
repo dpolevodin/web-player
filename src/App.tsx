@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { ConfigProvider, Carousel, Space, theme } from "antd";
+import { useEffect, useState } from "react";
+import { ConfigProvider, Space, theme } from "antd";
 import { ThemeSwitcher } from "./shared/ui/ThemeSwitcher";
 import { useDarkMode } from "./shared/hooks/useDarkMode";
 import { ThemeContainer } from "./shared/ui/ThemeContainer";
@@ -14,13 +14,15 @@ import type { UploadFile } from "antd";
 import type { SpaceImagesResponse } from "./shared/types/imageTypes";
 import { MOCK_DATA } from "./shared/mocks";
 import { FileNameText } from "./shared/ui/FileNameText";
-import { UnorderedListOutlined } from "@ant-design/icons";
 import { TrackListButton } from "./shared/ui/TrackListButton";
 import classNames from "classnames";
 import styles from "./App.module.css";
 import { TrackList } from "./shared/ui/TrackList";
+import { AudioFile } from "./shared/types/types";
+import { getFileDuration } from "./shared/hooks/useFileDuration";
 
-const REQUEST_IMAGE_COUNT = 10;
+// TODO: доделать бесконечный список
+const REQUEST_IMAGE_COUNT = 15;
 const DEFAULT_IMAGE_URL = {
   title: "A Year of Assessing Astronomical Hazards",
   url: "https://apod.nasa.gov/apod/image/2011/IMG_20201124052235_9280_px1050.jpg",
@@ -30,20 +32,26 @@ const DEFAULT_IMAGE_URL = {
 const MAIN_CONTENT_WIDTH = "208px";
 const MAIN_CONTENT_HEIGHT = "480px";
 
-type AudioFile = { src: string; name: string };
-
 function App() {
   const { darkMode, handleChangeDarkMode } = useDarkMode();
-  const [audioFile, setAudioFile] = useState<AudioFile | null>(null);
+  const [audioFiles, setAudioFiles] = useState<AudioFile[]>([]);
   const [data, setData] = useState<SpaceImagesResponse>([DEFAULT_IMAGE_URL]);
   const [favorite, addToFavorite] = useState(false);
   const [trackListView, setTrackListView] = useState(false);
+  const [currentFile, setCurrentFile] = useState<AudioFile | null>(null);
+
+  useEffect(() => {
+    const lastElement = audioFiles.at(-1);
+    if (!!audioFiles.length && lastElement) {
+      setCurrentFile(lastElement);
+    }
+  }, [audioFiles]);
 
   useEffect(() => {
     fetch(
       // TODO: вернуть обратно на корректную ссылку
-      // `https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=${REQUEST_IMAGE_COUNT}`
-      `https://test/planetary/apod?api_key=DEMO_KEY&count=${REQUEST_IMAGE_COUNT}`
+      `https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=${REQUEST_IMAGE_COUNT}`
+      // `https://test/planetary/apod?api_key=DEMO_KEY&count=${REQUEST_IMAGE_COUNT}`
     )
       .then((response) => response.json())
       .then((data: SpaceImagesResponse) => {
@@ -66,7 +74,8 @@ function App() {
     setCurrentTimeHandler,
     onLoadedMetadata,
     setTargetTime,
-  } = useAudio(audioFile?.src);
+    fileInfo,
+  } = useAudio(currentFile);
 
   const handleForwardClick = () => {
     console.log("forward clicked");
@@ -76,13 +85,18 @@ function App() {
     console.log("backward clicked");
   };
 
-  const handleUpload = (file: UploadFile) => {
-    setAudioFile(null);
+  const handleUpload = async (file: UploadFile) => {
     if (file) {
-      setAudioFile({
-        name: file?.name ?? "unknown",
-        src: URL.createObjectURL(file as unknown as File),
-      });
+      const { duration, src } = await getFileDuration<HTMLAudioElement>(file);
+      setAudioFiles((state) => [
+        ...state,
+        {
+          name: file?.name ?? "unknown",
+          uid: file.uid,
+          duration,
+          src,
+        },
+      ]);
     }
   };
 
@@ -131,11 +145,13 @@ function App() {
               imagesData={data}
               width={MAIN_CONTENT_WIDTH}
             />
-            {audioFile && (
-              <FileNameText playing={isPlaying}>{audioFile.name}</FileNameText>
+            {currentFile && (
+              <FileNameText playing={isPlaying}>
+                {currentFile.name}
+              </FileNameText>
             )}
             <ProgressSlider
-              disabled={!audioFile}
+              disabled={!audioFiles?.length}
               max={duration}
               min={0}
               value={currentTime}
@@ -151,11 +167,12 @@ function App() {
               onPlayClick={togglePlay}
               onBackwardClick={handleBackwardClick}
               onForwardClick={handleForwardClick}
-              disabled={!audioFile}
+              disabled={!audioFiles?.length}
             />
           </Space>
           <TrackList
-            list={["track_1", "track_2", "track_3", "track_4", "track_5"]}
+            list={audioFiles}
+            playingFileInfo={fileInfo}
             style={{
               height: MAIN_CONTENT_HEIGHT,
               width: 256,

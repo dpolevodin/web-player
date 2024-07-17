@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, FC } from "react";
+import { PropsWithChildren, FC } from "react";
 import { Typography, Badge, Space } from "antd";
 import { MAX_CONTENT_WIDTH } from "../../../constants";
 
