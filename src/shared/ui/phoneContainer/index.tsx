@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren } from "react";
+import { FC, PropsWithChildren } from "react";
 import styles from "./styles.module.css";
 import image from "./assets/phone.png";
 import classNames from "classnames";

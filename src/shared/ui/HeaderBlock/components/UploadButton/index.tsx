@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import { Button, Tooltip, Upload } from "antd";
 import type { UploadFile } from "antd";

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { Button, Tooltip } from "antd";
 
