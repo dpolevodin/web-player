@@ -171,6 +171,7 @@ function App() {
             />
           </Space>
           <TrackList
+            onItemClick={setCurrentFile}
             list={audioFiles}
             playingFileInfo={fileInfo}
             style={{
