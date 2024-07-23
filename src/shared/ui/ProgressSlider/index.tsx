@@ -15,7 +15,6 @@ export const ProgressSlider: FC<Props> = ({
   const currentValue = formatToSeconds(value);
   const maxValue = formatToSeconds(max);
 
-  // TODO: убрать контрольные точки визуальные
   const marks: SliderSingleProps["marks"] = {
     [`${min}`]: `${
       value && value > 0 && currentValue ? currentValue : "00:00"

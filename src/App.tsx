@@ -14,7 +14,7 @@ import type { UploadFile } from "antd";
 import type { SpaceImagesResponse } from "./shared/types/imageTypes";
 import { MOCK_DATA } from "./shared/mocks";
 import { FileNameText } from "./shared/ui/FileNameText";
-import { TrackListButton } from "./shared/ui/TrackListButton";
+import { FooterButtonsGroup } from "./shared/ui/TrackListButton";
 import classNames from "classnames";
 import styles from "./App.module.css";
 import { TrackList } from "./shared/ui/TrackList";
@@ -32,13 +32,31 @@ const DEFAULT_IMAGE_URL = {
 const MAIN_CONTENT_WIDTH = "208px";
 const MAIN_CONTENT_HEIGHT = "480px";
 
+const findNextAndPreviousFile = (
+  currentFile: AudioFile,
+  list: AudioFile[],
+  key?: "next"
+): AudioFile => {
+  const currentFileIndex = list.findIndex(
+    (file) => file.uid === currentFile.uid
+  );
+  if (key === "next") {
+    return currentFileIndex === list?.length - 1
+      ? list[0]
+      : list[currentFileIndex + 1];
+  }
+  return currentFileIndex === 0
+    ? list[list?.length - 1]
+    : list[currentFileIndex - 1];
+};
+
 function App() {
   const { darkMode, handleChangeDarkMode } = useDarkMode();
   const [audioFiles, setAudioFiles] = useState<AudioFile[]>([]);
   const [data, setData] = useState<SpaceImagesResponse>([DEFAULT_IMAGE_URL]);
-  const [favorite, addToFavorite] = useState(false);
   const [trackListView, setTrackListView] = useState(false);
   const [currentFile, setCurrentFile] = useState<AudioFile | null>(null);
+  const [favoritesList, setFavoritesList] = useState<string[]>([]);
 
   useEffect(() => {
     const lastElement = audioFiles.at(-1);
@@ -46,6 +64,9 @@ function App() {
       setCurrentFile(lastElement);
     }
   }, [audioFiles]);
+
+  const isFavorite =
+    !!currentFile?.uid && favoritesList?.includes(currentFile?.uid);
 
   useEffect(() => {
     fetch(
@@ -75,14 +96,23 @@ function App() {
     onLoadedMetadata,
     setTargetTime,
     fileInfo,
+    isMuted,
+    setIsMuted,
+    reset,
   } = useAudio(currentFile);
 
   const handleForwardClick = () => {
-    console.log("forward clicked");
+    if (currentFile) {
+      const next = findNextAndPreviousFile(currentFile, audioFiles, "next");
+      setCurrentFile(next);
+    }
   };
 
   const handleBackwardClick = () => {
-    console.log("backward clicked");
+    if (currentFile) {
+      const previous = findNextAndPreviousFile(currentFile, audioFiles);
+      setCurrentFile(previous);
+    }
   };
 
   const handleUpload = async (file: UploadFile) => {
@@ -104,12 +134,36 @@ function App() {
     setTrackListView((prevState) => !prevState);
   };
 
+  const handleAddToFavoriteButtonClick = () => {
+    if (currentFile) {
+      const fileUid = currentFile?.uid;
+      setFavoritesList((state) =>
+        state?.includes(fileUid)
+          ? state.filter((uid) => uid !== fileUid)
+          : [...state, currentFile?.uid]
+      );
+    }
+  };
+
+  const handleMuteClick = () => {
+    if (setIsMuted) {
+      setIsMuted((state) => !state);
+    }
+  };
+
+  const handleTrackDeleteClick = (uid: string) => {
+    console.log(uid, currentFile?.uid);
+    if (currentFile?.uid === uid && reset) {
+      setCurrentFile(null);
+      reset();
+    }
+    setAudioFiles((state) => state?.filter((file) => file.uid !== uid));
+  };
+
   return (
     <ConfigProvider
       theme={{
         token: {
-          // TODO: собрать тему для приложения g
-          // colorPrimary: "#706c6c",
           borderRadius: 12,
         },
         algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
@@ -120,9 +174,6 @@ function App() {
           ref={audioRef}
           onLoadedMetadata={onLoadedMetadata}
           onTimeUpdate={setCurrentTimeHandler}
-          onEnded={() => {
-            console.log("Track ended");
-          }}
         />
         <PhoneContainer isDarkMode={darkMode}>
           <Space
@@ -136,10 +187,8 @@ function App() {
           >
             <HeaderBlock
               onUpload={handleUpload}
-              addedToFavorite={favorite}
-              onAddToFavorite={() => {
-                addToFavorite((prev) => !prev);
-              }}
+              addedToFavorite={isFavorite}
+              onAddToFavorite={handleAddToFavoriteButtonClick}
             />
             <ImageWithDescription
               imagesData={data}
@@ -158,9 +207,6 @@ function App() {
               onChange={setTargetTime}
               defaultValue={0}
               width={MAIN_CONTENT_WIDTH}
-              onChangeComplete={(value) => {
-                console.log("onChangeCompleted", value);
-              }}
             />
             <ControlsButtonGroup
               playing={isPlaying}
@@ -168,6 +214,7 @@ function App() {
               onBackwardClick={handleBackwardClick}
               onForwardClick={handleForwardClick}
               disabled={!audioFiles?.length}
+              stepButtonDisabled={audioFiles?.length < 2}
             />
           </Space>
           <TrackList
@@ -185,10 +232,14 @@ function App() {
               [styles.screenIn]: trackListView,
               [styles.screenOut]: !trackListView,
             })}
+            deleteButtonOnClick={handleTrackDeleteClick}
           />
-          <TrackListButton
-            onClick={handleTrackListButtonClick}
+          <FooterButtonsGroup
+            onListClick={handleTrackListButtonClick}
             isTrackListView={trackListView}
+            onMuteClick={handleMuteClick}
+            isMuted={isMuted}
+            muteDisabled={!currentFile}
           />
         </PhoneContainer>
       </ThemeContainer>

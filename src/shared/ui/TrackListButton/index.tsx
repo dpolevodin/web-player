@@ -1,28 +1,61 @@
-import { FC } from "react";
+import { FC, Fragment } from "react";
 import {
   UnorderedListOutlined,
   CustomerServiceOutlined,
+  SoundOutlined,
+  MutedOutlined,
 } from "@ant-design/icons";
-import { Button, type ButtonProps, Tooltip } from "antd";
+import { Button, Tooltip } from "antd";
 import styles from "./styles.module.css";
 
-type Props = ButtonProps & { isTrackListView?: boolean };
+type Props = {
+  isTrackListView?: boolean;
+  isMuted?: boolean;
+  onListClick?: () => void;
+  onMuteClick?: () => void;
+  muteDisabled?: boolean;
+};
 
-export const TrackListButton: FC<Props> = ({ isTrackListView, onClick }) => (
-  <Tooltip title={isTrackListView ? "back to player" : "go to playlist"}>
-    <Button
-      type="text"
-      icon={
-        isTrackListView ? (
-          <CustomerServiceOutlined className={styles.buttonIcon} />
-        ) : (
-          <UnorderedListOutlined className={styles.buttonIcon} />
-        )
-      }
-      shape="circle"
-      size="large"
-      onClick={onClick}
-      className={styles.listButton}
-    />
-  </Tooltip>
+export const FooterButtonsGroup: FC<Props> = ({
+  isTrackListView,
+  onListClick,
+  onMuteClick,
+  isMuted,
+  muteDisabled,
+}) => (
+  <Fragment>
+    <Tooltip title={isTrackListView ? "Back to player" : "Go to playlist"}>
+      <Button
+        type="text"
+        icon={
+          isTrackListView ? (
+            <CustomerServiceOutlined className={styles.buttonIcon} />
+          ) : (
+            <UnorderedListOutlined className={styles.buttonIcon} />
+          )
+        }
+        shape="circle"
+        size="large"
+        onClick={onListClick}
+        className={styles.listButton}
+      />
+    </Tooltip>
+    <Tooltip title={isMuted ? "Unmute" : "Mute"}>
+      <Button
+        type="text"
+        icon={
+          isMuted ? (
+            <MutedOutlined className={styles.buttonIcon} />
+          ) : (
+            <SoundOutlined className={styles.buttonIcon} />
+          )
+        }
+        shape="circle"
+        size="large"
+        onClick={onMuteClick}
+        className={styles.muteButton}
+        disabled={muteDisabled}
+      />
+    </Tooltip>
+  </Fragment>
 );

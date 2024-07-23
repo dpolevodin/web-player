@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import {
   Empty,
   Space,
@@ -11,11 +11,13 @@ import {
 import { MAX_CONTENT_WIDTH } from "../../../constants";
 import { AudioFile } from "../../types/types";
 import { formatToSeconds } from "../ProgressSlider/utils";
+import { DeleteOutlined } from "@ant-design/icons";
 
 type Props = SpaceProps & {
   list: AudioFile[];
   playingFileInfo?: AudioFile;
   onItemClick?: (item: AudioFile) => void;
+  deleteButtonOnClick?: (uid: string) => void;
 };
 
 const { Text } = Typography;
@@ -24,16 +26,23 @@ export const TrackList: FC<Props> = ({
   list,
   playingFileInfo,
   onItemClick,
+  deleteButtonOnClick,
   ...props
 }) => {
+  const [trackUidHovered, setUidTrackHovered] = useState<string | null>(null);
   const playingFileUid = playingFileInfo?.playing
     ? playingFileInfo.uid
     : undefined;
 
   const handleItemClick = (item: AudioFile) => () => {
-    console.log(item.name, "click");
     if (onItemClick) {
       onItemClick(item);
+    }
+  };
+
+  const handleDeleteClick = (uid: string) => () => {
+    if (deleteButtonOnClick) {
+      deleteButtonOnClick(uid);
     }
   };
 
@@ -54,6 +63,12 @@ export const TrackList: FC<Props> = ({
                   justifyContent: "space-between",
                   gap: 16,
                   width: "100%",
+                }}
+                onMouseEnter={() => {
+                  setUidTrackHovered(uid);
+                }}
+                onMouseLeave={() => {
+                  setUidTrackHovered(null);
                 }}
               >
                 <div
@@ -78,9 +93,20 @@ export const TrackList: FC<Props> = ({
                     {name}
                   </Button>
                 </div>
-                <Text type="secondary">
-                  {formatToSeconds(item?.duration) ?? "00:00"}
-                </Text>
+                {trackUidHovered !== uid && (
+                  <Text type="secondary">
+                    {formatToSeconds(item?.duration) ?? "00:00"}
+                  </Text>
+                )}
+                {trackUidHovered === uid && (
+                  <Button
+                    type="text"
+                    icon={<DeleteOutlined />}
+                    shape="circle"
+                    size="small"
+                    onClick={handleDeleteClick(uid)}
+                  />
+                )}
               </div>
             );
           }}
