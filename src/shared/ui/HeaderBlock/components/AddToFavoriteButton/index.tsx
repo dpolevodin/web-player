@@ -5,11 +5,13 @@ import { Button, Tooltip } from "antd";
 export type AddToFavoriteButtonProps = {
   onClick?: VoidFunction;
   added?: boolean;
+  addedToFavoriteDisabled?: boolean;
 };
 
 export const AddToFavoriteButton: FC<AddToFavoriteButtonProps> = ({
   onClick,
   added,
+  addedToFavoriteDisabled,
 }) => (
   <Tooltip title="Add to favorite">
     <Button
@@ -17,6 +19,7 @@ export const AddToFavoriteButton: FC<AddToFavoriteButtonProps> = ({
       shape="circle"
       size="large"
       onClick={onClick}
+      disabled={addedToFavoriteDisabled}
     />
   </Tooltip>
 );

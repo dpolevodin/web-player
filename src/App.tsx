@@ -14,7 +14,7 @@ import type { UploadFile } from "antd";
 import type { SpaceImagesResponse } from "./shared/types/imageTypes";
 import { MOCK_DATA } from "./shared/mocks";
 import { FileNameText } from "./shared/ui/FileNameText";
-import { FooterButtonsGroup } from "./shared/ui/TrackListButton";
+import { FooterButtonsGroup } from "./shared/ui/FooterButtonsGroup";
 import classNames from "classnames";
 import styles from "./App.module.css";
 import { TrackList } from "./shared/ui/TrackList";
@@ -152,7 +152,6 @@ function App() {
   };
 
   const handleTrackDeleteClick = (uid: string) => {
-    console.log(uid, currentFile?.uid);
     if (currentFile?.uid === uid && reset) {
       setCurrentFile(null);
       reset();
@@ -189,6 +188,7 @@ function App() {
               onUpload={handleUpload}
               addedToFavorite={isFavorite}
               onAddToFavorite={handleAddToFavoriteButtonClick}
+              addedToFavoriteDisabled={!currentFile}
             />
             <ImageWithDescription
               imagesData={data}
