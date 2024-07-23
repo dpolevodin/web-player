@@ -4,4 +4,5 @@ export type AudioFile = {
   name: string;
   playing?: boolean;
   duration?: number;
+  favorite?: boolean;
 };

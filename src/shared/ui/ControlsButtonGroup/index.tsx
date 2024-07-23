@@ -14,6 +14,7 @@ type Props = {
   onPlayClick?: VoidFunction;
   onForwardClick?: VoidFunction;
   onBackwardClick?: VoidFunction;
+  stepButtonDisabled?: boolean;
 };
 
 export const ControlsButtonGroup: FC<Props> = ({
@@ -22,6 +23,7 @@ export const ControlsButtonGroup: FC<Props> = ({
   onBackwardClick,
   playing,
   disabled,
+  stepButtonDisabled,
 }) => (
   <Flex gap={30} align="center">
     <Button
@@ -32,7 +34,7 @@ export const ControlsButtonGroup: FC<Props> = ({
       }
       onClick={onBackwardClick}
       style={{ width: 48, height: 48 }}
-      disabled={disabled}
+      disabled={stepButtonDisabled}
     />
     <Button
       type="primary"
@@ -56,7 +58,7 @@ export const ControlsButtonGroup: FC<Props> = ({
       }
       onClick={onForwardClick}
       style={{ width: 48, height: 48 }}
-      disabled={disabled}
+      disabled={stepButtonDisabled}
     />
   </Flex>
 );

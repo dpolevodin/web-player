@@ -21,6 +21,9 @@ type Response = {
   setTargetTime: Dispatch<SetStateAction<number>>;
   setCurrentTimeHandler: (e: ChangeEvent<HTMLAudioElement>) => void;
   fileInfo?: AudioFile;
+  isMuted?: boolean;
+  setIsMuted?: Dispatch<SetStateAction<boolean>>;
+  reset?: VoidFunction;
 };
 
 export const useAudio = (file: AudioFile | null): Response => {
@@ -29,16 +32,29 @@ export const useAudio = (file: AudioFile | null): Response => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [targetTime, setTargetTime] = useState(0);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsPlaying(false);
     setDuration(0);
     setCurrentTime(0);
     setTargetTime(0);
     if (audioRef.current && file?.src) {
       audioRef.current.src = file.src;
+      audioRef?.current?.play();
+      setIsPlaying(true);
     }
   }, [file]);
+
+  const reset = () => {
+    setDuration(0);
+    setCurrentTime(0);
+    setTargetTime(0);
+    setIsPlaying(false);
+    setIsMuted(false);
+    if (audioRef?.current) {
+      audioRef.current?.pause();
+    }
+  };
 
   const togglePlay = () => {
     if (isPlaying) {
@@ -56,6 +72,16 @@ export const useAudio = (file: AudioFile | null): Response => {
       audioRef.current.currentTime = targetTime;
     }
   }, [targetTime]);
+
+  /** Изменение состояния флага muted */
+  useEffect(() => {
+    if (audioRef?.current && isMuted) {
+      audioRef.current.muted = true;
+    }
+    if (audioRef?.current && !isMuted) {
+      audioRef.current.muted = false;
+    }
+  }, [isMuted]);
 
   const onLoadedMetadata = () => {
     if (audioRef.current) {
@@ -79,5 +105,8 @@ export const useAudio = (file: AudioFile | null): Response => {
     setTargetTime,
     currentTime,
     fileInfo: file ? { ...file, playing: isPlaying } : undefined,
+    isMuted,
+    setIsMuted,
+    reset,
   };
 };
